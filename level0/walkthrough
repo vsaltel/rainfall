@@ -1,5 +1,12 @@
+Check du home et des droits du binaire present -> Bit SUID active et level1 proprietaire du fichier
 Test de strings, ltrace, strace sur le binaire -> Aucun resultat
 Lancement du binaire sans arguments -> SegV
 Lancement du binaire avec -> "No !"
-Ouverture avec gdb et reecriture du source du binaire en C
-Test de modifier le retour des fonctions getuid et getgid avec infos du level1 (2030) -> Ne fonctionne pas
+Reecriture du source du binaire en C avec objdump -d
+Comparaison de argv[1] et de la chaine "423"
+Test d'execution avec "423" en argument -> Lancement d'un shell avec les droits de l'utilisateur level1
+"""
+level0@RainFall:~$ ./level0 423
+$ id -u
+2030
+"""
