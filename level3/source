@@ -1,0 +1,19 @@
+void v(void)
+{
+	char array[536];
+
+	array = "";
+	fgets(array, 512, 0);
+	printf(array);
+	if (0 == 0x40)
+	{
+		fwrite(0, "Wait what?!\n");
+		system("/bin/sh");
+	}
+}
+
+int main(void)
+{
+	v();
+	return(0);
+}
