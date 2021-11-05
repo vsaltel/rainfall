@@ -1,0 +1,20 @@
+void p(void)
+{
+	char array[100];
+
+	fflush(0);
+	gets(array);
+	if (__builtin_return_address & 0xb0000000 == 0xb0000000)
+	{
+		printf("(%p)\n", array);
+		exit(1);
+	}
+	puts(array);
+	strdup(array);
+}
+
+int main(void)
+{
+	p();
+	return (8);
+}
