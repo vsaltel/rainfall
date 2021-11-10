@@ -1,0 +1,19 @@
+void o(void)
+{
+	system("/bin/sh");
+	exit(1);
+}
+
+void n(void)
+{
+	char area[536];
+	fgets(area, 512, 0);
+	printf(area);
+	exit(1);
+}
+
+int main(void)
+{
+	n();
+	return (0);
+}
