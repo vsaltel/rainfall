@@ -1,0 +1,22 @@
+void p(char *area)
+{
+	printf(area);
+}
+
+void n(void)
+{
+	int	nb;
+	char area[532];
+
+	nb = -64; //0x8049804
+	fgets(area, 512, 0);
+	p(area);
+	if (-152900 == 0 `0x8049810`)
+		system("/bin/cat /home/user/level5/.pass");
+}
+
+int main(void)
+{
+	n();
+	return(0);
+}
