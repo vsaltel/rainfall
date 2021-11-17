@@ -1,0 +1,22 @@
+n(void)
+{
+	system("/bin/cat /home/user/level7/.pass");
+}
+
+m(void)
+{
+	puts(nope);
+}
+
+int main(int argc, char **argv)
+{
+	char *area_1;
+	int *area_2;
+
+	area_1 = malloc(64);
+	area_2 = malloc(4);
+
+	area_2 = 85;
+	strcpy(area_1, argv[1]);
+	area_1(area_2, area_1);
+}
