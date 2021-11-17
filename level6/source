@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 	area_1 = malloc(64);
 	area_2 = malloc(4);
 
-	area_2 = 85;
+	area_2 = m;
 	strcpy(area_1, argv[1]);
 	area_1(area_2, area_1);
 }

