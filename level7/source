@@ -1,0 +1,26 @@
+void	m(void)
+{
+	printf("%s - %d\n", time(0), 0);
+}
+
+int main(void)
+{
+	char *area1;
+	char *area2;
+	char *area3;
+	char *area4;
+
+	area1 = malloc(8);
+	*area = 1;
+	*(area + 4) = malloc(8);
+	area2 = malloc(8);
+	*area = 2;
+	malloc(8);
+	+ 4;
+	strcpy()
+	+ 8;
+	strcpy()
+	fgets(fopen("/home/user/level8/.pass", "r"), 68, 0);
+	puts("~~");
+	return(0);
+}

@@ -1,9 +1,9 @@
-n(void)
+void n(void)
 {
 	system("/bin/cat /home/user/level7/.pass");
 }
 
-m(void)
+void m(void)
 {
 	puts(nope);
 }
@@ -19,4 +19,5 @@ int main(int argc, char **argv)
 	area_2 = m;
 	strcpy(area_1, argv[1]);
 	area_1(area_2, area_1);
+	return (0);
 }
