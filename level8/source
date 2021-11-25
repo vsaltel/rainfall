@@ -1,0 +1,9 @@
+char *auth;
+char *service;
+char glob[40];
+
+int main(void)
+{
+	printf("%p, %p \n", auth, service);
+	fgets(char area[2, 128, glob);
+}

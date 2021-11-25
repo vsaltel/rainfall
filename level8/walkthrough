@@ -1,0 +1,5 @@
+Connextion au level8 -> Bit NX desactive
+Chech du home et des permissions du binaire -> Bit SUID level9
+Exection du binaire -> (nil), (nil)
+					puis attente d'entree standard et de nouveau
+					(nil), (nil)
