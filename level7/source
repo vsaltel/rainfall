@@ -1,26 +1,24 @@
+char glob[100];
+
 void	m(void)
 {
-	printf("%s - %d\n", time(0), 0);
+	printf("%s - %d\n", glob, time(0));
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
-	char *area1;
-	char *area2;
-	char *area3;
-	char *area4;
+	char *area1; //esp + 0x1c
+	char *area2; //esp + 0x18
 
 	area1 = malloc(8);
-	*area = 1;
-	*(area + 4) = malloc(8);
+	*area1 = 1;
+	*(area1 + 4) = malloc(8);
 	area2 = malloc(8);
-	*area = 2;
-	malloc(8);
-	+ 4;
-	strcpy()
-	+ 8;
-	strcpy()
-	fgets(fopen("/home/user/level8/.pass", "r"), 68, 0);
-	puts("~~");
+	*area2 = 2;
+	*(area2 + 4) = malloc(8);
+	strcpy(area1 + 4, *argv + 4);
+	strcpy(area2 + 4, *argv + 8);
+	fgets(glob (0x8049960), "r", 68, fopen("/home/user/level8/.pass"));
+	puts("~~" (0x8048703));
 	return(0);
 }
