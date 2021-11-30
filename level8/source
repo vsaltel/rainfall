@@ -1,9 +1,37 @@
-char *auth;
-char *service;
 char glob[40];
+char reset[] = "reset";
+char auth[]= "auth ";
+char *p_auth = auth;
+char service[]= "service";
+char *p_service = service;
+char login[]= "login";
 
 int main(void)
 {
-	printf("%p, %p \n", auth, service);
-	fgets(char area[2, 128, glob);
+	while ()
+	{
+		printf("%p, %p \n", p_auth, service);
+		if (fgets(char area[26], 128, glob) != NULL)
+		{
+			if (!strncmp(area, auth, 5))
+			{
+				p_auth = malloc(4);
+				p_auth = NULL;
+				if (strlen(area + 5) < 30)
+					strcpy(p_auth, *area + 5);
+			}
+			if (!strncmp(area, reset, 5))
+			{
+				free(p_auth);
+				if (!strncmp(area, reset, 6) == 0)
+					p_service = strdup(area + 7);
+			}
+			if (strncmp(area, login, 5))
+			{
+				if (area == auth)
+				system("/bin/sh");
+			}
+		}
+		
+	}
 }
