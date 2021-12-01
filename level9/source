@@ -1,0 +1,30 @@
+class N //108 octets
+{
+	private:
+		void *ptr;
+		char *str;
+		int nb;
+
+	public:
+		N(int); //constructeur
+		setAnnotation(char*)
+}
+
+N::void N(int i)
+{
+	this.ptr = 0x8048848;
+	this.nb = i;
+}
+
+N::setAnnotation(char *ptr)
+{
+	memcpy(this.str, ptr, strlen(ptr));
+}
+
+int main(int argc, char **argv)
+{
+	if (argc <= 1)
+		exit(1);
+	new(Obj(5));
+	new(Obj(6));
+}
