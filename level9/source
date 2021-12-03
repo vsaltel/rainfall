@@ -1,18 +1,30 @@
 class N //108 octets
 {
 	private:
-		void *ptr;
-		char *str;
-		int nb;
+		void *ptr; 0x0
+		char str[100]; 0x4
+		int nb; 0x68
 
 	public:
 		N(int); //constructeur
-		setAnnotation(char*)
+		setAnnotation(char*);
+		operator-(N&); //surcharge-
+		operator+(N&); //surcharge+
+}
+
+N::operator-(N& a, N& b)
+{
+	return (a.nb - b.nb);
+}
+
+N::operator+(N&)
+{
+	return (a.nb + b.nb);
 }
 
 N::void N(int i)
 {
-	this.ptr = 0x8048848;
+	this.ptr = 0x8048848; //vtable
 	this.nb = i;
 }
 
@@ -25,6 +37,8 @@ int main(int argc, char **argv)
 {
 	if (argc <= 1)
 		exit(1);
-	new(Obj(5));
-	new(Obj(6));
+	a = new(Obj(5));
+	b = new(Obj(6));
+	a.setAnnotation(argv[1]);
+	a = b + a;	//(b.ptr.(surchage +)(a, b);)
 }
