@@ -1,0 +1,32 @@
+void p(char *arg1, char *arg2)
+{
+	char str[4120];
+
+	puts(arg1);
+	read(0, str, 4096);
+	strchr(str, '\n') = '\0';
+	strncpy(arg2, str, 20);
+}
+
+void pp(char *a1)
+{
+	smthg[40];
+	char a2[20];
+	char a3[20];
+
+	p(" - ", a2);
+	p(" - ", a3);
+	strcpy(a1, a2);
+	a1[strlen(a1)] = ' ';
+	strcat(a3, a1);
+}
+
+int main(void)
+{
+	smthg[22];
+	char a1[42];
+
+	pp(a1);
+	puts(a1);
+	return (0);
+}

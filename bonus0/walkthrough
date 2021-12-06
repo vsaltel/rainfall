@@ -1,0 +1,36 @@
+Connextion au bonus0 -> Bit NX desactive
+Chech du home et des permissions du binaire -> Bit SUID bonus1
+Exection du binaire -> 
+"""
+bonus0@RainFall:~$ ./bonus0
+ -
+a
+ -
+e
+a e
+"""
+
+___ stack main
+0xbffff6c8
+
+
+0xbffff688 (ebp + 0x8)
+___
+
+ebp  0xbffff680
+
+___ stack pp
+0xbffff678
+|
+20 octets
+|
+ebp - 0x1c 0xbffff664
+|
+20
+|
+ebp - 0x30 0xbffff650
+|
+40
+|
+0xbffff628
+___
