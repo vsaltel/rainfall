@@ -1,0 +1,43 @@
+int language;
+
+void greetuser(void)
+{
+	char smthg[8];
+	char a2[80];
+
+	switch(language)
+	{
+		case 1:
+			memcpy(a2, "Hyvää päivää ", 19)
+		case 2:
+			memcpy(a2, "Goedemiddag! ", 14)
+		case 0:
+			memcpy(a2, "Hello ", 7)
+	}
+	strcat(a2, a1);
+	puts(a2);
+}
+
+int main(int argc, char **argv)
+{
+	char a1[72];
+	char smthg2[4];
+	char *aenv;
+
+	if (argc == 3)
+	{
+		memset(a1, 0, 19);
+		strncpy(a1, argv[1], 40);
+		strncpy(a1 + 40, argv[2], 32);
+		if ((aenv = getenv("LANG")))
+		{
+			if (!memcmp(aenv, "fi", 2))
+				language = 1;
+			if (!memcmp(aenv, "nl", 2))
+				language = 2;
+		}
+		strncpy($esp, a1, 19);
+		greetuser(a1);
+	}
+	return (0);
+}
