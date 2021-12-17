@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 
 	if (argc == 3)
 	{
-		memset(a1, 0, 19);
+		memset(a1, 0, 76);
 		strncpy(a1, argv[1], 40);
 		strncpy(a1 + 40, argv[2], 32);
 		if ((aenv = getenv("LANG")))
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 			if (!memcmp(aenv, "nl", 2))
 				language = 2;
 		}
-		strncpy($esp, a1, 19);
+		strncpy($esp, a1, 76);
 		greetuser(a1);
 	}
 	return (0);

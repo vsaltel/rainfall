@@ -1,0 +1,31 @@
+int main(void)
+{
+	smthg[24];
+	char a1[66];
+	char a2[66];
+	FILE *fd;
+
+	fd = fopen("/home/user/end/.pass", "r");
+	bzero(a1, 132);
+	if (fd != 0)
+	{
+		if (argc == 2)
+		{
+			fread(a1, 1, 66, fd);
+			a1[65] = '\0';
+			a1[atoi(argv[1])] = '\0';
+			fread(a2, 1, 65, fd);
+			fclose(fd);
+			if (!strcmp(argv[1], a1))
+			{
+				execl("sh", "/bin/sh", 0);
+			}
+			else
+			{
+				puts(a1 + 66);
+			}
+			return (0);
+		}
+	}
+	return (255);
+}
