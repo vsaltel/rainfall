@@ -2,9 +2,18 @@ Check du home et des droits du binaire present -> Bit SUID active et level1 prop
 Test de strings, ltrace, strace sur le binaire -> Aucun resultat
 Lancement du binaire sans arguments -> SegV
 Lancement du binaire avec -> "No !"
-Reecriture du source du binaire en C avec objdump -d
-Comparaison de argv[1] et de la chaine "423"
+
+Reecriture du source du binaire en C avec gdb (peda)
+
+"""
+   	if (atoi(argv[1]) == 423)
+	{
+		str = strdup("/bin/sh");
+"""
+
+Comparaison de argv[1] et du nombre 423 apres 'atoi'
 Test d'execution avec "423" en argument -> Lancement d'un shell avec les droits de l'utilisateur level1
+
 """
 level0@RainFall:~$ ./level0 423
 $ id -u

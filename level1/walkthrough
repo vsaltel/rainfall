@@ -13,11 +13,11 @@ Segmentation fault (core dumped)
 
 Reecriture du code source en C en utilisant objdump -d
 
-Fonction appelant "system(/bin/sh)" non appele dans le main
+La fonction qui execute "system(/bin/sh)" n'est pas appele dans le main
 
 Documentation precedement lu sur le bufferoverflow -> https://beta.hackndo.com/buffer-overflow/
 
-Le segfault apparait car l'adresse de retour de la fonction (rEIP) a ete ecrase et redirige vers une adresse externe et refuse par le kernel
+Le segfault apparait car l'adresse de retour de la fonction (rEIP) a ete ecrase et redirige vers une adresse refuse par le kernel
 
 Apres un certain nombre d'essais du programme avec une variation du nombres d'octets transmis, j'ai pu precisement trouver a quel endroit se situais l'rEIP : apres 76 caracteres (72 prevu pour la variable et 4 pour l'rEBP)
 
@@ -57,5 +57,4 @@ ls
 level2
 cat .pass
 53a4a712787f40ec66c3c26c1f4b164dcad5552b038bb0addd69bf5bf6fa8e77
-exit
 """

