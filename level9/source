@@ -12,25 +12,25 @@ class N //108 octets
 		operator+(N&); //surcharge+
 }
 
-N::operator-(N& a, N& b)
+N::setAnnotation(char *ptr)
 {
-	return (a.nb - b.nb);
+	memcpy(this.str, ptr, strlen(ptr));
 }
 
-N::operator+(N&)
-{
-	return (a.nb + b.nb);
-}
-
-N::void N(int i)
+N::void N(int i) //constructeur
 {
 	this.ptr = 0x8048848; //vtable
 	this.nb = i;
 }
 
-N::setAnnotation(char *ptr)
+N::operator-(N& a, N& b)
 {
-	memcpy(this.str, ptr, strlen(ptr));
+	return (a.nb - b.nb);
+}
+
+N::operator+(N& a, N& b)
+{
+	return (a.nb + b.nb);
 }
 
 int main(int argc, char **argv)
@@ -40,5 +40,5 @@ int main(int argc, char **argv)
 	a = new(Obj(5));
 	b = new(Obj(6));
 	a.setAnnotation(argv[1]);
-	a = b + a;	//(b.ptr.(surchage +)(a, b);)
+	a = b + a;	//b.ptr.surchage+(b, a);
 }

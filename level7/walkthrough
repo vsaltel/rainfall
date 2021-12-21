@@ -1,7 +1,7 @@
 Connextion au level7 -> Bit NX desactive
 Chech du home et des permissions du binaire -> Bit SUID level8
 
-Voici l'etat de la memoire alloue avant les appels a strcpy :
+Voici l'etat de la heap avant les appels a strcpy :
 
 """
 gdb-peda$ x/16wx 0x0804a008
@@ -31,14 +31,14 @@ void	m(void)
 	fgets(glob (0x8049960), "r", 68, fopen("/home/user/level8/.pass"));
 """
 
-la fonction m affiche le contenu de variable glob qui contient le flag apres l'appel a fgets, il faut alors trouver une solution pour appeler cette fonction apres l'appel a fgets
+la fonction 'm' affiche le contenu de variable glob qui contient le flag apres l'appel a fgets, il faut alors trouver une solution pour appeler cette fonction apres l'appel a fgets
 
 """
 	fgets(glob (0x8049960), "r", 68, fopen("/home/user/level8/.pass"));
 	puts("~~" (0x8048703));
 """
 
-Nous voyons ici qu'apres fgets, la fonction puts est appele. On peut alors ecraser l'adresse qui correspond a la fonction puts par celle de la fonction m
+Nous voyons ici qu'apres fgets, la fonction puts est appele. On peut alors ecraser l'adresse qui correspond a la fonction puts par celle de la fonction 'm'
 
 """
 level7@RainFall:~$ objdump -R ./level7

@@ -17,11 +17,13 @@ printf exploitable de la meme maniere qu'au 2 levels precedents
 Recherche sur google -> "execute function with printf exploit"
 -> https://axcheron.github.io/exploit-101-format-strings/
 
+"""
 objdump -R ./level5
 -> 08049838 R_386_JUMP_SLOT   exit
 
 objdump -t ./level5 | grep o
 -> 080484a4 g     F .text	0000001e              o
+"""
 
 Il faut alors ecraser l'adresse pointer par exit par celle de la fonction o afin qu'elle soit executer.
 

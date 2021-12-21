@@ -8,6 +8,8 @@ Il est aussi possible d'obtenir la signature de chaque fonction en passant chaqu
 J'ai alors pu reconstituer l'ensemble du code source
 
 """
+	a = new(Obj(5));
+	b = new(Obj(6));
 	a.setAnnotation(argv[1]);
 """
 """
@@ -19,11 +21,6 @@ N::setAnnotation(char *ptr)
 
 Le premier argument du programme est copie sans test de taille dans la memoire de la premiere allocation de l'objet 'N'
 
-"""
-	a = new(Obj(5));
-	b = new(Obj(6));
-"""
-
 Sachant qu'il y a une deuxieme allocation qui suit, celle ci peut alors etre modifie avec un buffer overflow
 
 """
@@ -31,8 +28,6 @@ Sachant qu'il y a une deuxieme allocation qui suit, celle ci peut alors etre mod
 """
 
 La fonction de surcharge d'operateur se situe a l'adresse pointee par l'adresse de la table virtuelle de la classe N
-
-l'adresse de cette table virtuelle est le premier pointer dans la memoire alloue par un objet de classe 'N' et set au debut du constructeur
 
 """
    0x0804867c <+136>:	mov    eax,DWORD PTR [esp+0x10]
@@ -44,6 +39,8 @@ l'adresse de cette table virtuelle est le premier pointer dans la memoire alloue
    0x08048690 <+156>:	mov    DWORD PTR [esp],eax
    0x08048693 <+159>:	call   edx
 """
+
+l'adresse de cette table virtuelle est le premier pointer dans la memoire alloue par un objet de classe 'N' et set au debut du constructeur
 
 L'adresse de la fonction de surcharge n'est donc pas appele directement par le programme, elle est stocke dans le registre edx apres 2 redirections de pointeur (objet -> vtable -> fonction de surcharge)
 
@@ -66,7 +63,7 @@ gdb-peda$ x/50wx 0x0804a008
 		int nb; 0x68
 """
 
-La memoire affiche est le contenu de la heap avant l'appel de la surcharge, nous voyons bien les 2 allocations commencant par l'adresse de la vtable (0x08048848)
+La memoire affiche est le contenu de la heap avant l'appel de la surcharge, nous voyons bien les 2 allocations des 2 objets commencant par l'adresse de la vtable (0x08048848)
 
 Nous voyons aussi ou est ecrit l'argument 1 du programme ('A')
 

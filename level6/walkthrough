@@ -13,11 +13,14 @@ nous voyons dans le main qu'il y a 2 appel a malloc, le deuxieme est une allocat
 
 la premiere alloction est passe en argument en tant que buffer de destination du strcpy, et argv[1] en tant que source
 
+"""
 gdb-peda$ print $eax
 $10 = 0x804a008
+"""
 
 0x804a008 etant l'adresse de destination du strcpy et le premier malloc, nous pouvons voir sa taille et le contenu des prochaines adresses de cette maniere
 
+"""
 gdb-peda$ x/30x 0x804a008
 0x804a008:	0x41414141	0x00000000	0x00000000	0x00000000
 0x804a018:	0x00000000	0x00000000	0x00000000	0x00000000
@@ -30,13 +33,16 @@ gdb-peda$ x/30x 0x804a008
 
 $objdump -t ./level6 | grep m
 08048468 g     F .text	00000014              m
+"""
 
 On retrouve 0x08048468, l'adresse de la fonction m. Cette adresse se trouve a l'adresse pointer par le pointeur allouer apres celle du buffer
 
 Sachant qu'aucun test de longueur sur le buffer n'est effectue, nous pouvons alors ecraser cette adresse par celle de la fonction n
 
+"""
 $objdump -t ./level6 | grep n
 08048454 g     F .text	00000014              n
+"""
 
 Il y a donc 72 octets prevu pour le buffer donc le payload doit etre
 
